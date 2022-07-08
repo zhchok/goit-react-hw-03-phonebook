@@ -75,7 +75,7 @@ export class App extends Component {
 					</>
 				) : (
 					<Box mt={4}>
-						<p>You dont have contacts 😔</p>
+						<p>You dont have contacts, add your first contact 😉</p>
 					</Box>
 				)}
 			</Box>
