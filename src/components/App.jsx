@@ -8,14 +8,21 @@ import { SearchBox } from "./SearchBox/SearchBox";
 
 export class App extends Component {
 	state = {
-		contacts: [
-			{ id: nanoid(), name: "Rosie Simpson", number: "459-12-56" },
-			{ id: nanoid(), name: "Hermione Kline", number: "443-89-12" },
-			{ id: nanoid(), name: "Eden Clements", number: "645-17-79" },
-			{ id: nanoid(), name: "Annie Copeland", number: "227-91-26" },
-		],
+		contacts: [],
 		filter: "",
 	};
+
+	componentDidMount() {
+		const contacts = localStorage.getItem("contacts");
+		const parsedContacts = JSON.parse(contacts);
+		parsedContacts && this.setState({ contacts: parsedContacts });
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.contacts !== prevState.contacts) {
+			localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+		}
+	}
 
 	addContact = (name, number) => {
 		const contact = {
@@ -60,9 +67,17 @@ export class App extends Component {
 				<GlobalStyle />
 
 				<PhonebookForm onSubmit={this.addContact} />
-				<SearchBox value={filter} onChange={this.changeFilter} />
 
-				<ContactsList contacts={visibleContancts} onDeleteContact={this.deleteContact}></ContactsList>
+				{visibleContancts.length > 0 ? (
+					<>
+						<SearchBox value={filter} onChange={this.changeFilter} />
+						<ContactsList contacts={visibleContancts} onDeleteContact={this.deleteContact}></ContactsList>
+					</>
+				) : (
+					<Box mt={4}>
+						<p>You dont have contacts 😔</p>
+					</Box>
+				)}
 			</Box>
 		);
 	}
